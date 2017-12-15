@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
-  "scripts": { 
+  "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -15,5 +15,11 @@
   "bugs": {
     "url": "https://github.com/tjindapitak/kopiko/issues"
   },
-  "homepage": "https://github.com/tjindapitak/kopiko#readme"
+  "homepage": "https://github.com/tjindapitak/kopiko#readme",
+  "dependencies": {
+    "axios": "^0.17.1",
+    "moment": "^2.19.4",
+    "node-cron": "^1.2.1",
+    "sqlite3": "^3.1.13"
+  }
 }
