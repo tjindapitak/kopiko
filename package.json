@@ -1,0 +1,19 @@
+{
+  "name": "kopiko",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": { 
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tjindapitak/kopiko.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tjindapitak/kopiko/issues"
+  },
+  "homepage": "https://github.com/tjindapitak/kopiko#readme"
+}
