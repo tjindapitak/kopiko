@@ -1,7 +1,7 @@
 const conf = require('../config');
 const axios = require("axios");
 
-module.exports = (data) => (axios({
+const fetch = (data) => (axios({
     method: 'post',
     url: conf.ES_BULK_URL,
     params: { 
@@ -14,3 +14,7 @@ module.exports = (data) => (axios({
     responseType: 'json',
     data: data
 }));
+
+module.exports = { 
+    fetch
+};
