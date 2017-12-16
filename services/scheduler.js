@@ -3,6 +3,7 @@ const cron = require('node-cron');
 const moment = require('moment');
 const fetchElasticSearch = require('../DAL/elasticsearch').fetch;
 const query = require('../DAL/query');
+const dbCon = require('./dbConnection');
 
 const buildPartitionList = hour => {
     const today = moment().subtract(hour >= 8 ? 0 : 1, 'day').format('YYYY.MM.DD');
@@ -38,6 +39,7 @@ const job = () => {
         console.log(`rows count: ${result.length}`);
 
         // change conf.ES_RESULT_LIMIT = 1 for testing
+        dbCon.open();
         result.forEach(row => {
             const insertRow = {
                 error_msg: row.key,
@@ -45,10 +47,12 @@ const job = () => {
                 datetime: gte.format(conf.DATE_FORMAT),
                 rec_status: 1
             };
-
+            
             // insert into db
-            console.log(insertRow);
+            dbCon.insert(insertRow);
+            //console.log(insertRow);
         });
+        dbCon.close();        
     }).catch((err) => {
         console.log(err);
     });

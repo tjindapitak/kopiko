@@ -24,6 +24,19 @@ const query = (queryStr) => {
     });
 }
 
+const insert = ({error_msg, total, datetime, rec_status}) => {
+    db.run(`INSERT INTO errors(error_msg, total, datetime, rec_status) 
+            VALUES(${error_msg}, ${total}, ${datetime}, ${rec_status})`, function(err) {
+        if (err) {
+            console.log(err.message);
+            return false;
+        }
+
+        console.log(`A row has been inserted with rowid ${this.lastID}`);
+        return true;
+    });
+}
+
 const close = () => {
     db.close((err) => {
         if (err) {
@@ -33,4 +46,4 @@ const close = () => {
     });
 }
 
-module.exports = { open, query, close };
+module.exports = { open, query, close, insert };
