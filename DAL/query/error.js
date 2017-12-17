@@ -91,5 +91,5 @@ module.exports = options => {
                 }
             }
         }
-    });
+    }) + '\r\n';
 };

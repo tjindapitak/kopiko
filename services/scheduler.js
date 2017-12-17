@@ -26,8 +26,7 @@ const job = () => {
     const lte = now().subtract(1, 'milliseconds');
     const partitions = buildPartitionList(now().hour());
 
-    const q = `${query.partitionQuery(partitions)}\r\n${query.errorQuery({ gte: gte.valueOf(), lte: lte.valueOf() })}\r\n`;
-
+    const q = query.partitionQuery(partitions) + query.errorQuery({ gte: gte.valueOf(), lte: lte.valueOf() });
     /*
     console.log(moment().format(conf.DATE_FORMAT));
     console.log(`fetching .. @ ${gte.format(conf.DATE_FORMAT)} - ${lte.format(conf.DATE_FORMAT)}`);
