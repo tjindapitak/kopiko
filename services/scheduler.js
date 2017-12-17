@@ -32,19 +32,19 @@ const job = () => {
     console.log(moment().format(conf.DATE_FORMAT));
     console.log(`fetching .. @ ${gte.format(conf.DATE_FORMAT)} - ${lte.format(conf.DATE_FORMAT)}`);
     */
-    
+    dbCon.open();
     fetchElasticSearch(q).then(response => {
         const result = response.data.responses[0].aggregations.group.buckets;
 
         console.log(`rows count: ${result.length}`);
 
         // change conf.ES_RESULT_LIMIT = 1 for testing
-        dbCon.open();
         result.forEach(row => {
             const insertRow = {
                 error_msg: row.key,
                 total: row.doc_count,
                 datetime: gte.format(conf.DATE_FORMAT),
+                hour: gte.format('HH'), // TODO: improve to get hour from now function
                 rec_status: 1
             };
             
@@ -52,10 +52,10 @@ const job = () => {
             dbCon.insert(insertRow);
             //console.log(insertRow);
         });
-        dbCon.close();        
     }).catch((err) => {
         console.log(err);
     });
+    dbCon.close();
 }
 
 job();
