@@ -16,23 +16,23 @@ const open = () => {
 const query = (queryStr) => {
     db.serialize(() => {
         db.each(queryStr, (err, row) => {
-          if (err) {
-            console.error(err.message);
-          }
-          console.log(row);
+            if (err) {
+                console.error(err.message);
+            }
+            console.log(row);
         });
     });
 }
 
-const insert = ({error_msg, total, datetime, hour, rec_status}) => {
+const insert = ({ error_msg, total, datetime, hour, rec_status }) => {
     db.run(`INSERT INTO errors(error_msg, total, datetime, hour, rec_status) 
-            VALUES(?, ?, ?, ? ,?)`, [ error_msg, total, datetime, hour, rec_status ], function(err) {
+            VALUES(?, ?, ?, ? ,?)`, [error_msg, total, datetime, hour, rec_status], function(err) {
         if (err) {
             console.log(err.message);
             return false;
         }
 
-        console.log(`A row has been inserted with rowid ${this.lastID}`);
+        //console.log(`A row has been inserted with rowid ${this.lastID}`);
         return true;
     });
 }

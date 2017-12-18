@@ -6,8 +6,8 @@ const query = require('../DAL/query');
 const dbCon = require('./dbConnection');
 const measure = require('./measure');
 
-const buildPartitionList = hour => {
-    const today = moment().subtract(hour >= 8 ? 0 : 1, 'day').format('YYYY.MM.DD');
+const buildPartitionList = target => {
+    const today = target().subtract(target().hour() >= 8 ? 0 : 1, 'day').format('YYYY.MM.DD');
     let partitions = [];
 
     conf.ES_PARTITION.CLUSTERS.forEach(cluster => {
@@ -24,48 +24,58 @@ async function storeData(response, gte) {
     console.log(`store data for ${gte.format(conf.DATE_FORMAT)}`);
     console.log(`rows count: ${result.length}`);
 
-    measure('storeData')(() => {
-        dbCon.open();
-        // change conf.ES_RESULT_LIMIT = 1 for testing
-        result.forEach(row => {
-            const insertRow = {
-                error_msg: row.key,
-                total: row.doc_count,
-                datetime: gte.format(conf.DATE_FORMAT),
-                hour: gte.format('HH'), // TODO: improve to get hour from now function
-                rec_status: 1
-            };
+    //measure('storeData')(() => { 
+    //});
+    dbCon.open();
+    // change conf.ES_RESULT_LIMIT = 1 for testing
+    result.forEach(row => {
+        const insertRow = {
+            error_msg: row.key,
+            total: row.doc_count,
+            datetime: gte.format(conf.DATE_FORMAT),
+            hour: gte.format('HH'), // TODO: improve to get hour from now function
+            rec_status: 1
+        };
 
-            // insert into db
-            dbCon.insert(insertRow);
-            //console.log(insertRow);
-        });
-        dbCon.close();
+        // insert into db
+        dbCon.insert(insertRow);
+        //console.log(insertRow);
     });
+    dbCon.close();
 }
 
 // TODO: use config
-async function job(jId) {
-    //console.log(`JobID ${jId}`);
-    // TODO: improve now function
-    const now = () => (moment().second(0).minute(0).milliseconds(0));
-    const gte = now().subtract(1, 'hour');
-    const lte = now().subtract(1, 'milliseconds');
-    const partitions = buildPartitionList(now().hour());
+async function job(momentObj, { hour = 0, minute = 0, second = 0, milliseconds = 0 }) {
+    const target = () => (momentObj().hour(hour).minute(minute).second(second).milliseconds(milliseconds));
+    console.log(target());
+    const gte = target().subtract(1, 'hour');
+    const lte = target().subtract(1, 'milliseconds');
+    const partitions = buildPartitionList(target);
     const q = query.partitionQuery(partitions) + query.errorQuery({ gte: gte.valueOf(), lte: lte.valueOf() });
+
     /*
     console.log(moment().format(conf.DATE_FORMAT));
     console.log(`fetching .. @ ${gte.format(conf.DATE_FORMAT)} - ${lte.format(conf.DATE_FORMAT)}`);
     */
-    const response = await fetchElasticSearch(q);
-    const data = await storeData(response, gte);
+    //const response = await fetchElasticSearch(q);
+    //const data = await storeData(response, gte);
 }
 
-// Test async
-//job(1);
-//job(2);
-//job(3);
-//job(4);
+const generateTwoWeeksData = () => {
+    // customDate = moment("2014-06-01T12:00:00Z")
+    const twoWeeksAgo = () => moment().day(-14);
+    let timelapse = twoWeeksAgo();
+    let hourCount = 1;
 
-const cronJob = cron.schedule(conf.ES_QUERY_FREQ_CRON, job, false);
-cronJob.start();
+    do {
+        job(twoWeeksAgo, { hour: hourCount });
+        hourCount = hourCount + 1;
+        timelapse.hour(1);
+        console.log(timelapse.dayOfYear());
+        console.log(moment().dayOfYear());
+    } while (timelapse.dayOfYear() <= moment().dayOfYear());
+}
+
+generateTwoWeeksData();
+//const cronJob = cron.schedule(conf.ES_QUERY_FREQ_CRON, job, false);
+//cronJob.start();
