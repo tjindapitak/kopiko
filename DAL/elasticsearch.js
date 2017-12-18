@@ -4,17 +4,17 @@ const axios = require("axios");
 const fetch = (data) => (axios({
     method: 'post',
     url: conf.ES_BULK_URL,
-    params: { 
+    params: {
         timeout: '0',
         ignore_unavailable: 'true'
     },
-    headers: { 
+    headers: {
         'kbn-xsrf': 'reporting',
     },
     responseType: 'json',
     data: data
 }));
 
-module.exports = { 
+module.exports = {
     fetch
 };
