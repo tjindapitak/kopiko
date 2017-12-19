@@ -2,10 +2,10 @@ const measure = (jobName) => {
     return (func) => {
         if (typeof func === "function") {
             console.time(jobName);
-            func;
+            func();
             console.timeEnd(jobName);
         } else {
-            func;
+            func();
         }
     };
 }

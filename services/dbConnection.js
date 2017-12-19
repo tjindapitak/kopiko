@@ -9,7 +9,7 @@ const open = () => {
         if (err) {
             console.error(err.message);
         }
-        console.log('Connected to the kopiko database.');
+        //console.log('Connected to the kopiko database.');
     });
 };
 
@@ -42,7 +42,7 @@ const close = () => {
         if (err) {
             console.error(err.message);
         }
-        console.log('Close the database connection.');
+        //console.log('Close the database connection.');
     });
 }
 
