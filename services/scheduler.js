@@ -24,24 +24,33 @@ async function storeData(response, gte) {
     console.log(`store data for ${gte.format(conf.DATE_FORMAT)}`);
     console.log(`rows count: ${result.length}`);
 
-    measure('storeData')(() => {
+    //measure('storeData')(() => {
         dbCon.open();
         // change conf.ES_RESULT_LIMIT = 1 for testing
         result.forEach(row => {
+            const countList = row.dc.buckets.reduce((acc, dc) => 
+                ({ ...acc, [dc.key]: dc.doc_count })
+            , { });
+
             const insertRow = {
-                error_msg: row.key,
+                msg: row.key,
                 total: row.doc_count,
-                datetime: gte.format(conf.DATE_FORMAT),
-                hour: gte.format('HH'), // TODO: improve to get hour from now function
-                rec_status: 1
+                datadate: parseInt(gte.format(conf.DATE_FORMAT)),
+                hour: gte.hour(),
+                count_hk: countList['HK'] || 0,
+                count_sg: countList['SG'] || 0,
+                count_am: countList['AM'] || 0,
+                count_as: countList['AS'] || 0,
+                count_sh: countList['SH'] || 0
             };
 
             // insert into db
+
             dbCon.insert(insertRow);
             //console.log(insertRow);
         });
         dbCon.close();
-    });
+    //});
 }
 
 // TODO: use config
@@ -53,6 +62,7 @@ async function job(jId) {
     const lte = now().subtract(1, 'milliseconds');
     const partitions = buildPartitionList(now().hour());
     const q = query.partitionQuery(partitions) + query.errorQuery({ gte: gte.valueOf(), lte: lte.valueOf() });
+
     /*
     console.log(moment().format(conf.DATE_FORMAT));
     console.log(`fetching .. @ ${gte.format(conf.DATE_FORMAT)} - ${lte.format(conf.DATE_FORMAT)}`);
@@ -62,10 +72,10 @@ async function job(jId) {
 }
 
 // Test async
-//job(1);
+job(1);
 //job(2);
 //job(3);
 //job(4);
 
-const cronJob = cron.schedule(conf.ES_QUERY_FREQ_CRON, job, false);
-cronJob.start();
+//const cronJob = cron.schedule(conf.ES_QUERY_FREQ_CRON, job, false);
+//cronJob.start();

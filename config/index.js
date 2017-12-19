@@ -10,5 +10,5 @@ module.exports = {
     ERROR_COL_NAME: 'message_raw',
 
     // DB
-    DATE_FORMAT: "YYYY-MM-DD HH:mm:ss"
+    DATE_FORMAT: "YYYYMMDD"
 }

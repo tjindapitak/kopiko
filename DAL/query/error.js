@@ -88,6 +88,13 @@ module.exports = options => {
                     "order": {
                         "_count": "desc"
                     }
+                },
+                "aggs": {
+                    "dc": {
+                        "terms": {
+                            "field": "dc"
+                        }
+                    }
                 }
             }
         }

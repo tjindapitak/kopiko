@@ -24,9 +24,9 @@ const query = (queryStr) => {
     });
 }
 
-const insert = ({error_msg, total, datetime, hour, rec_status}) => {
-    db.run(`INSERT INTO errors(error_msg, total, datetime, hour, rec_status) 
-            VALUES(?, ?, ?, ? ,?)`, [ error_msg, total, datetime, hour, rec_status ], function(err) {
+const insert = ({msg, total, datadate, hour, count_hk, count_sg, count_am, count_as, count_sh }) => {
+    db.run(`INSERT INTO errors(msg, total, datadate, hour, count_hk, count_sg, count_am, count_as, count_sh) 
+            VALUES(?, ?, ?, ? ,?, ?, ?, ?, ?)`, [ msg, total, datadate, hour, count_hk, count_sg, count_am, count_as, count_sh ], function(err) {
         if (err) {
             console.log(err.message);
             return false;
