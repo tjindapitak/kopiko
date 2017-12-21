@@ -85,6 +85,8 @@ async function generateData(inputDayCount) {
     } while (shouldContinue(dayCount, hourCount));
 }
 
-generateData(-14);
+//generateData(-14);
 //const cronJob = cron.schedule(conf.ES_QUERY_FREQ_CRON, job, false);
 //cronJob.start();
+
+module.exports = { job };
