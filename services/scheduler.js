@@ -38,7 +38,7 @@ async function storeData(response, gte) {
             };
 
             // insert into db
-            //dbCon.insert(insertRow);
+            dbCon.insert(insertRow);
             //console.log(insertRow);
         });
         dbCon.close();
@@ -85,7 +85,11 @@ async function generateData(inputDayCount) {
     } while (shouldContinue(dayCount, hourCount));
 }
 
-//generateData(-14);
+const test = (test) => {
+    console.log(test);
+}
+
+generateData(-14);
 //const cronJob = cron.schedule(conf.ES_QUERY_FREQ_CRON, job, false);
 //cronJob.start();
 
